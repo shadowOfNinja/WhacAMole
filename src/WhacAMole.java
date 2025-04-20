@@ -23,8 +23,12 @@ public class WhacAMole {
     Random random = new Random();
     Timer setMoleTimer;
     Timer setPlantTimer;
+    int plantTimerDelay = 1500; // Delay for plant timer in milliseconds
+    int moleTimerDelay = 1000; // Delay for mole timer in milliseconds
+
     int score = 0;
     int highScore = 0;
+    int moleclicks = 0;
     boolean gameOver = false;
 
     WhacAMole() {
@@ -67,6 +71,20 @@ public class WhacAMole {
                             highScore = score;
                         }
                         textLabel.setText("Score: " + Integer.toString(score) + " Best: " + Integer.toString(highScore));
+                        moleclicks++;
+                        if (moleclicks == 5) {
+                            moleclicks = 0;
+                            if (moleTimerDelay > 100) {
+                                moleTimerDelay -= 50; // Decrease mole timer delay
+                            }
+                            setMoleTimer.setDelay(moleTimerDelay); // Decrease mole timer delay
+                            setMoleTimer.restart(); // Restart the timer with the new delay
+                            if (plantTimerDelay > 100) {
+                                plantTimerDelay -= 50; // Decrease plant timer delay
+                            }
+                            setPlantTimer.setDelay(plantTimerDelay); // Decrease plant timer delay
+                            setPlantTimer.restart(); // Restart the timer with the new delay
+                        }
                     }
                     else if (tile == currPlantTile[0] || tile == currPlantTile[1]) {
                         gameOver = true;
@@ -81,7 +99,7 @@ public class WhacAMole {
             });
         }
 
-        setMoleTimer = new Timer(1000, new ActionListener() {
+        setMoleTimer = new Timer(moleTimerDelay, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //remove icon from current tile
                 if (currMoleTile != null) {
@@ -102,7 +120,7 @@ public class WhacAMole {
             }
         });
 
-        setPlantTimer = new Timer(1500, new ActionListener() {
+        setPlantTimer = new Timer(plantTimerDelay, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // set plant #1
 
@@ -162,6 +180,10 @@ public class WhacAMole {
                         board[i].setEnabled(true);
                     }
                     textLabel.setText("Score: " + Integer.toString(score) + " Best: " + Integer.toString(highScore));
+                    moleTimerDelay = 1000; // Reset mole timer delay
+                    plantTimerDelay = 1500; // Reset plant timer delay
+                    setMoleTimer.setDelay(moleTimerDelay); // Reset mole timer delay
+                    setPlantTimer.setDelay(plantTimerDelay); // Reset plant timer delay
                     setMoleTimer.start();
                     setPlantTimer.start();
                 }
@@ -172,6 +194,7 @@ public class WhacAMole {
 
         setMoleTimer.start();
         setPlantTimer.start();
+        frame.setAlwaysOnTop(true);
         frame.setVisible(true);
     }
 }
