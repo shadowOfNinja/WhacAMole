@@ -5,12 +5,13 @@ import javax.swing.*;
 
 public class WhacAMole {
     int boardWidth = 600;
-    int boardHeight = 650; //50 for the text panel on top
+    int boardHeight = 700; //50 for the text panel on top, 50 for the button panel at the bottom
 
     JFrame frame = new JFrame("Mario: Whac A Mole");
     JLabel textLabel = new JLabel();
     JPanel textPanel = new JPanel();
-    JPanel boardPanel = new JPanel(); 
+    JPanel boardPanel = new JPanel();
+    JPanel buttonPanel = new JPanel();
 	
     JButton[] board = new JButton[9];
     ImageIcon moleIcon;
@@ -24,9 +25,9 @@ public class WhacAMole {
     Timer setPlantTimer;
     int score = 0;
     int highScore = 0;
+    boolean gameOver = false;
 
     WhacAMole() {
-        // frame.setVisible(true);
         frame.setSize(boardWidth, boardHeight);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -43,10 +44,8 @@ public class WhacAMole {
         frame.add(textPanel, BorderLayout.NORTH);
 
         boardPanel.setLayout(new GridLayout(3, 3));
-        // boardPanel.setBackground(Color.black);
         frame.add(boardPanel);
 
-        // plantIcon = new ImageIcon(getClass().getResource("./piranha.png"));
         Image plantImg = new ImageIcon(getClass().getResource("./piranha.png")).getImage();
         plantIcon = new ImageIcon(plantImg.getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH));
 
@@ -58,7 +57,6 @@ public class WhacAMole {
             board[i] = tile;
             boardPanel.add(tile);
             tile.setFocusable(false);
-            // tile.setIcon(plantIcon);
 
             tile.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -71,6 +69,7 @@ public class WhacAMole {
                         textLabel.setText("Score: " + Integer.toString(score) + " Best: " + Integer.toString(highScore));
                     }
                     else if (tile == currPlantTile) {
+                        gameOver = true;
                         textLabel.setText("Game Over: " + Integer.toString(score));
                         setMoleTimer.stop();
                         setPlantTimer.stop();
@@ -80,7 +79,7 @@ public class WhacAMole {
                     }
                 }
             });
-    }
+        }
 
         setMoleTimer = new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -124,6 +123,28 @@ public class WhacAMole {
             }
         });
 
+        buttonPanel.setLayout(new BorderLayout());
+        JButton restartButton = new JButton("Restart Game");
+        restartButton.setFocusable(false);
+        restartButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (gameOver) {
+                    // reset game state except for high score
+                    System.out.println("Restarting game...");
+                    gameOver = false;
+                    score = 0;
+                    for (int i = 0; i < 9; i++) {
+                        board[i].setEnabled(true);
+                    }
+                    textLabel.setText("Score: " + Integer.toString(score) + " Best: " + Integer.toString(highScore));
+                    setMoleTimer.start();
+                    setPlantTimer.start();
+                }
+            }
+        });
+        buttonPanel.add(restartButton, BorderLayout.CENTER);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
         setMoleTimer.start();
         setPlantTimer.start();
         frame.setVisible(true);
@@ -134,5 +155,4 @@ public class WhacAMole {
 /*
  * Homework
  * - Add Multiple Piranha plants and store them in an Array
- * - Add Button on the bottom to restart game
  */
