@@ -18,7 +18,7 @@ public class WhacAMole {
     ImageIcon plantIcon;
 
     JButton currMoleTile;
-    JButton currPlantTile;
+    JButton[] currPlantTile = new JButton[2]; // Array to hold multiple plant tiles
 
     Random random = new Random();
     Timer setMoleTimer;
@@ -68,7 +68,7 @@ public class WhacAMole {
                         }
                         textLabel.setText("Score: " + Integer.toString(score) + " Best: " + Integer.toString(highScore));
                     }
-                    else if (tile == currPlantTile) {
+                    else if (tile == currPlantTile[0] || tile == currPlantTile[1]) {
                         gameOver = true;
                         textLabel.setText("Game Over: " + Integer.toString(score));
                         setMoleTimer.stop();
@@ -94,7 +94,7 @@ public class WhacAMole {
                 JButton tile = board[num];
 
                 //if tile is occupied by plant, skip tile for this turn
-                if (currPlantTile == tile) return;
+                if (currPlantTile[0] == tile || currPlantTile[1] == tile) return;
 
                 //set tile to mole
                 currMoleTile = tile;
@@ -104,10 +104,12 @@ public class WhacAMole {
 
         setPlantTimer = new Timer(1500, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // set plant #1
+
                 //remove icon from current tile
-                if (currPlantTile != null) {
-                    currPlantTile.setIcon(null);
-                    currPlantTile = null;
+                if (currPlantTile[0] != null) {
+                    currPlantTile[0].setIcon(null);
+                    currPlantTile[0] = null;
                 }
 
                 //randomly select another tile
@@ -118,8 +120,31 @@ public class WhacAMole {
                 if (currMoleTile == tile) return;
 
                 //set tile to mole
-                currPlantTile = tile;
-                currPlantTile.setIcon(plantIcon);
+                currPlantTile[0] = tile;
+                currPlantTile[0].setIcon(plantIcon);
+
+                // set plant #2
+
+                //remove icon from current tile
+                if (currPlantTile[1] != null) {
+                    currPlantTile[1].setIcon(null);
+                    currPlantTile[1] = null;
+                }
+
+                //randomly select another tile
+                int num2 = random.nextInt(9); //0-8
+                //make sure the second plant is not on the same tile as the first plant
+                while (num2 == num) {
+                    num2 = random.nextInt(9); //0-8
+                }
+                JButton tile2 = board[num2];
+
+                //if tile is occupied by mole, skip tile for this turn
+                if (currMoleTile == tile2) return;
+
+                //set tile to mole
+                currPlantTile[1] = tile2;
+                currPlantTile[1].setIcon(plantIcon);
             }
         });
 
@@ -150,9 +175,3 @@ public class WhacAMole {
         frame.setVisible(true);
     }
 }
-
-
-/*
- * Homework
- * - Add Multiple Piranha plants and store them in an Array
- */
