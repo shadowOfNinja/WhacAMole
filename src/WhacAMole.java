@@ -23,6 +23,7 @@ public class WhacAMole {
     Timer setMoleTimer;
     Timer setPlantTimer;
     int score = 0;
+    int highScore = 0;
 
     WhacAMole() {
         // frame.setVisible(true);
@@ -34,7 +35,7 @@ public class WhacAMole {
 
         textLabel.setFont(new Font("Arial", Font.PLAIN, 50));
         textLabel.setHorizontalAlignment(JLabel.CENTER);
-        textLabel.setText("Score: " + Integer.toString(score));
+        textLabel.setText("Score: " + Integer.toString(score) + " Best: " + Integer.toString(highScore));
         textLabel.setOpaque(true);
 
         textPanel.setLayout(new BorderLayout());
@@ -64,7 +65,10 @@ public class WhacAMole {
                     JButton tile = (JButton) e.getSource();
                     if (tile == currMoleTile) {
                         score += 10;
-                        textLabel.setText("Score: " + Integer.toString(score));
+                        if (score > highScore) {
+                            highScore = score;
+                        }
+                        textLabel.setText("Score: " + Integer.toString(score) + " Best: " + Integer.toString(highScore));
                     }
                     else if (tile == currPlantTile) {
                         textLabel.setText("Game Over: " + Integer.toString(score));
@@ -131,5 +135,4 @@ public class WhacAMole {
  * Homework
  * - Add Multiple Piranha plants and store them in an Array
  * - Add Button on the bottom to restart game
- * - Keep track of high score and display it
  */
